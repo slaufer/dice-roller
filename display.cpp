@@ -15,20 +15,17 @@
 // initializes the display
 void initDisplay(struct DisplayState *display) {
   ssd1306_128x32_i2c_init();
-  setDisplayFont(display, ssd1306xled_font8x16, 2, 16, 16);
+  setDisplayFont(display, digital_font5x7);
+  //setDisplayFont(display, ssd1306xled_font5x7);
+  //setDisplayFont(display, ssd1306xled_font6x8);
+  //setDisplayFont(display, ssd1306xled_font8x16);
 }
 
 // sets the display font
 // screen and text buffer will be cleared
 void setDisplayFont(struct DisplayState *display, const uint8_t *font) {
-  // get font size (see ssd1306_fonts.c in lexus2k/ssd1306 for details)
-  uint8_t fontWidth = font[1];
-  uint8_t fontHeight = font[2];
 
-  ssd1306_setFixedFont(font);
-  ssd1306_clearScreen();
-
-  // DEALLOCATION
+  // first deallocate the existing text buffer if it exists
   if (display->lines != NULL) {
     for (int i = 0; i < display->rows; i++) {
       free(display->lines[i]);
@@ -41,21 +38,30 @@ void setDisplayFont(struct DisplayState *display, const uint8_t *font) {
     free(display->linesChanged);
   }
 
-  // REALLOCATION
-  display->lines = (char **) malloc(sizeof(char*) * rows);
-  display->linesChanged = (bool*) malloc(sizeof(bool) * rows);
-  for (int i = 0; i < rows; i++) {
-    display->lines[i] = (char *) malloc(cols + 1);
-    memset(display->lines[i], 0, cols + 1);
+  // get font size (see ssd1306_fonts.c in lexus2k/ssd1306 for details)
+  uint8_t fontWidth = font[1];
+  uint8_t fontHeight = font[2];
+
+  // figure out the new display size
+  display->cols = DISPLAY_WIDTH / fontWidth;
+  display->rows = DISPLAY_HEIGHT / fontHeight;
+  display->lineHeight = fontHeight;
+
+  // allocate the new text buffer
+  display->lines = (char **) malloc(sizeof(char*) * display->rows);
+  display->linesChanged = (bool*) malloc(sizeof(bool) * display->rows);
+  for (int i = 0; i < display->rows; i++) {
+    display->lines[i] = (char *) malloc(display->cols + 1);
+    memset(display->lines[i], 0, display->cols + 1);
     display->linesChanged[i] = false;
   }
 
-  display->rows = rows;
-  display->cols = cols;
-  display->lineHeight = lineHeight;
+  // update the display library
+  ssd1306_setFixedFont(font);
+  ssd1306_clearScreen();
 
   char buf[17];
-  snprintf((char*) buf, 17, "%dx%d", fontWidth, fontHeight);
+  snprintf((char*) buf, 17, "%dx%d  %dx%d", fontWidth, fontHeight, display->cols, display->rows);
   writeDisplay(display, 0, buf);
 }
 
@@ -87,6 +93,6 @@ void drawDisplay(struct DisplayState *display) {
   // TODO: only redraw the updated line
   ssd1306_clearScreen();
   for (int i = 0; i < display->rows; i++) {
-    ssd1306_printFixed(0, display->lineHeight * i, display->lines[i], STYLE_NORMAL);
+    ssd1306_printFixed(0, display->lineHeight * i, display->lines[i], STYLE_BOLD);
   }
 }

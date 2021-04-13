@@ -77,7 +77,16 @@ void loop()
       break;
   }
 */
+
+  /*
+  Serial.print(state.display.cols);
+  Serial.print("x");
+  Serial.print(state.display.rows);
+  Serial.print(" : ");
+  Serial.println(state.display.lineHeight);
+  */
+
   
   drawDisplay(&(state.display));
-  delay(5);
+  delay(500);
 }
