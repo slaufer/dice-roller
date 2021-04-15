@@ -1,7 +1,7 @@
 #ifndef _BUTTONS_H
 #define _BUTTONS_H
 
-#include "state.h"
+#include "ButtonState.h"
 
 extern void updateButtonStates(struct ButtonState buttons[]);
 

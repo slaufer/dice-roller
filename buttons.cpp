@@ -1,5 +1,5 @@
 #include "config.h"
-#include "state.h"
+#include "ButtonState.h"
 
 // updates all of the button states, press/long press detection, etc.
 void updateButtonStates(struct ButtonState buttons[])
