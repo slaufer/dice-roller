@@ -3,7 +3,7 @@
 #include "ssd1306.h"
 
 #include "config.h"
-#include "state.h"
+#include "ProgramState.h"
 #include "buttons.h"
 #include "display.h"
 
