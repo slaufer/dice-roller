@@ -6,6 +6,7 @@
 #include "ProgramState.h"
 #include "buttons.h"
 #include "display.h"
+#include "buildno.h"
 
 // using globals because i'm a big stupid baby
 struct ProgramState state;
@@ -13,6 +14,8 @@ struct ProgramState state;
 /////////////
 // SCREENS //
 /////////////
+
+/*
 
 void splashScreen() {
   writeDisplay(state.display, 0, 0, "electro-dice 0.1", STYLE_BOLD);
@@ -93,49 +96,40 @@ void rollDisplayScreen() {
   writeDisplay(state.display, 0, 1, buf);
 }
 
+*/
+
 //////////
 // MAIN //
 //////////
 
 void setup()
 {
-    Serial.begin(9600);
+  Serial.begin(9600);
 
-    pinMode(3, INPUT_PULLUP);
+  // initialize button pins
+  for (int i = 0; i < BUTTON_COUNT; i++) {
+    pinMode(BUTTON_PINS[i], BUTTON_PIN_MODE);
+  }
+  
+  // initialize display
+  initDisplay(state.display);
 
-    // initialize button pins
-    for (int i = 0; i < BUTTON_COUNT; i++) {
-      pinMode(BUTTON_PINS[i], BUTTON_PIN_MODE);
-    }
-    
-    // initialize display
-    initDisplay(state.display);
+  // initialize rng
+  // TODO: better random seeding
+  randomSeed(analogRead(0) + micros());
 
-    // initialize rng
-    // TODO: better random seeding
-    randomSeed(analogRead(0) + micros());
+  char buf[17];
+  snprintf(buf, 17, "Build #%d", BUILDNO);
+
+  writeDisplay(state.display, 0, 0, "Electro-dice");
+  writeDisplay(state.display, 1, 0, buf);
+  delay(1000);
+
 }
 
 void loop()
 {
   updateButtonStates(state.buttons);
-
-  switch (state.screen) {
-    case SCREEN_SPLASH:
-      splashScreen();
-    case SCREEN_DICE_COUNT:
-      diceCountScreen();
-      break;
-    case SCREEN_DICE_TYPE:
-      diceTypeScreen();
-      break;
-    case SCREEN_ROLL:
-      rollScreen();
-      break;
-    case SCREEN_ROLL_DISPLAY:
-      rollDisplayScreen();
-      break;
-  }
 
   drawDisplay(state.display);
 }
