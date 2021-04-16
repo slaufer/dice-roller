@@ -1,0 +1,13 @@
+#ifndef _SCREEN_H
+#define _SCREEN_H
+
+enum Screen {
+  SCREEN_SPLASH,
+  SCREEN_SPLASH_HOLD,
+  SCREEN_DICE_COUNT,
+  SCREEN_DICE_TYPE,
+  SCREEN_ROLL,
+  SCREEN_ROLL_DISPLAY
+};
+
+#endif

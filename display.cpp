@@ -1,10 +1,9 @@
 #include <string.h>
-#include "Arduino.h"
 #include "ssd1306.h"
 
+#include "config.h"
 #include "display.h"
 #include "DisplayState.h"
-#include "config.h"
 
 /////////////
 // DISPLAY //
@@ -22,10 +21,6 @@ void initDisplay(struct DisplayState &display) {
 // sets the display font
 // screen and text buffer will be cleared
 void setDisplayFont(struct DisplayState &display, const uint8_t *font) {
-  if (display.text != NULL) {
-    free(display.text);
-  }
-
   // get font size (see ssd1306_fonts.c in lexus2k/ssd1306 for details)
   uint8_t fontWidth = font[1];
   uint8_t fontHeight = font[2];
@@ -37,9 +32,7 @@ void setDisplayFont(struct DisplayState &display, const uint8_t *font) {
   display.fontWidth = fontWidth;
   display.fontHeight = fontHeight;
 
-  // allocate the new text buffer
-  display.text = (struct CharState*) malloc(display.count * sizeof(struct CharState));
-
+  // clear the text buffer
   for (int i = 0; i < display.count; i++) {
     display.text[i].ch = ' ';
     display.text[i].style = STYLE_NORMAL;

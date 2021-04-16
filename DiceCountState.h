@@ -2,7 +2,7 @@
 #define _DICECOUNTSTATE_H
 
 struct DiceCountState {
-  int count = defaultDiceCount;
+  int count = DEFAULT_DICE_COUNT;
 };
 
 #endif

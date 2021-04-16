@@ -2,7 +2,7 @@
 #define _DICETYPESTATE_H
 
 struct DiceTypeState {
-  int type = defaultDiceType;
+  int type = DEFAULT_DICE_TYPE;
 };
 
 #endif

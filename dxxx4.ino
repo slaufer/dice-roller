@@ -40,6 +40,8 @@ void diceCountScreen() {
 
   if (state.screens.diceCount.count < 1) {
     state.screens.diceCount.count = 1;
+  } else if (state.screens.diceCount.count > DICE_COUNT_MAX) {
+    state.screens.diceCount.count = DICE_COUNT_MAX;
   }
   
   writeDisplay(state.display, 0, 0, "Dice Count:");
@@ -52,7 +54,7 @@ void diceTypeScreen() {
 
   if (state.buttons[BUTTON_PREV].pressed && state.screens.diceType.type > 0) {
     state.screens.diceType.type--;
-  } else if (state.buttons[BUTTON_NEXT].pressed && state.screens.diceType.type < (diceTypeCount - 1)) {
+  } else if (state.buttons[BUTTON_NEXT].pressed && state.screens.diceType.type < (DICE_TYPE_COUNT - 1)) {
     state.screens.diceType.type++;
   } else if (state.buttons[BUTTON_SEL].pressed) {
     state.screen = SCREEN_ROLL;
@@ -61,20 +63,15 @@ void diceTypeScreen() {
   writeDisplay(state.display, 0, 0, "Dice Type:");
   int countLen = snprintf((char *) buf, 17, "%d", state.screens.diceCount.count);
   writeDisplay(state.display, 1, 0, buf, STYLE_NORMAL);
-  snprintf((char *) buf, 17, "d%d", diceTypes[state.screens.diceType.type]);
+  snprintf((char *) buf, 17, "d%d", DICE_TYPES[state.screens.diceType.type]);
   writeDisplay(state.display, 1, countLen, buf, STYLE_BOLD, false);
 }
 
 void rollScreen() {
-  if (state.screens.rollState.rolls != NULL) {
-    free(state.screens.rollState.rolls);
-  }
-
-  state.screens.rollState.rolls = (int*) malloc(sizeof(int) * state.screens.diceCount.count);
   state.screens.rollState.count = state.screens.diceCount.count;
 
   for (int i = 0; i < state.screens.diceCount.count; i++) {
-    state.screens.rollState.rolls[i] = random(1, diceTypes[state.screens.diceType.type] + 1);
+    state.screens.rollState.rolls[i] = random(1, DICE_TYPES[state.screens.diceType.type] + 1);
   }
 
   state.screen = SCREEN_ROLL_DISPLAY;
