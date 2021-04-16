@@ -3,6 +3,8 @@
 
 #include "Arduino.h"
 
+#include "config.h"
+
 struct ButtonState {
    int state = BUTTON_STATE_DEFAULT;
    bool pressed = false;
