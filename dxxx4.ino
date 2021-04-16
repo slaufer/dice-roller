@@ -1,15 +1,5 @@
 #include <string.h>
-#include "Arduino.h"
-#include "ssd1306.h"
-
-#include "config.h"
-#include "ProgramState.h"
-#include "buttons.h"
-#include "display.h"
-#include "buildno.h"
-
-// using globals because i'm a big stupid baby
-struct ProgramState state;
+#include "src/classes/Program.h"
 
 /////////////
 // SCREENS //
@@ -102,34 +92,16 @@ void rollDisplayScreen() {
 // MAIN //
 //////////
 
+Program program;
+
 void setup()
 {
-  Serial.begin(9600);
-
-  // initialize button pins
-  for (int i = 0; i < BUTTON_COUNT; i++) {
-    pinMode(BUTTON_PINS[i], BUTTON_PIN_MODE);
-  }
-  
-  // initialize display
-  initDisplay(state.display);
-
-  // initialize rng
-  // TODO: better random seeding
-  randomSeed(analogRead(0) + micros());
-
-  char buf[17];
-  snprintf(buf, 17, "Build #%d", BUILDNO);
-
-  writeDisplay(state.display, 0, 0, "Electro-dice");
-  writeDisplay(state.display, 1, 0, buf);
-  delay(1000);
-
+  program.setup();
 }
+
+Button b;
 
 void loop()
 {
-  updateButtonStates(state.buttons);
-
-  drawDisplay(state.display);
+  program.loop();
 }
