@@ -4,7 +4,7 @@
 
 void Display::init() {
   ssd1306_128x32_i2c_init();
-  this->setFont(ssd1306xled_font8x16);
+  this->setFont(DISPLAY_FONT_DEFAULT);
 }
 
 void Display::setFont(const uint8_t *font) {
@@ -91,7 +91,7 @@ void Display::draw() {
       this->buf[i].changed = false;
       x = col * this->fontWidth;
       y = row * this->fontHeight;
-      
+
       buf[0] = this->buf[i].ch;
       ssd1306_printFixed(x, y, buf, this->buf[i].style);
     }

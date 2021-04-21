@@ -1,62 +1,45 @@
-#include "../buildno.h"
+#include "ssd1306.h"
+
+#include "../config.h"
 #include "Program.h"
+#include "Screen.h"
+
+#include "FlashAsEEPROM.h"
 
 void Program::setup() {
   Serial.begin(9600);
-
-  // initialize buttons
-  for (int i = 0; i < BUTTON_COUNT; i++) {
-    this->buttons[i].setPin(BUTTON_PINS[i]);
-  }
-
-  // initialize display
-  // TODO: don't use config macros in Display
-  this->display.init();
-
-  // initialize rng
-  // TODO: better random seeding
+  this->state.init();
   randomSeed(analogRead(0) + micros());
-
-  char buf[17];
-  snprintf(buf, 17, "Build #%d", BUILDNO);
-
-  this->display.write(0, 0, "Electro-dice");
-  this->display.write(1, 0, buf);
-  delay(1000);
 }
 
 void Program::loop() {
-  // update buttons
-  for (int i = 0; i < BUTTON_COUNT; i++) {
-    this->buttons[i].update();
-  }
+  this->state.update();
 
   char buf[17];
 
-  for (int i = 0; i < BUTTON_COUNT; i++) {
-    if (this->buttons[i].getLongPressed()) {
-      snprintf((char *) buf, 17, "%d long pressed", i);
-      this->display.write(0, 0, buf);
-    } else if (this->buttons[i].getPressed()) {
-      snprintf((char *) buf, 17, "%d pressed", i);
-      this->display.write(0, 0, buf);
-    }
+  // check the tilt ball to see if we should initiate a roll
+  if (this->state.getTiltBall().getShaken() && this->state.getTiltBall().getShakeDuration() > DICE_ROLL_SHAKE_DURATION) {
+    this->state.setScreen(SCREEN_ROLL_DICE);
   }
 
-  this->display.draw();
-  delay(5);
+  // i could probably create a unified interface for all of the screens, but since we're doing static allocation for
+  // everything it's kind of pointless
+  if (this->state.getScreen() == SCREEN_SPLASH) {
+    this->screenSplash.run(this->state);
+  } else if (this->state.getScreen() == SCREEN_MAIN_MENU) {
+    this->screenMainMenu.run(this->state);
+  } else if (this->state.getScreen() == SCREEN_EDIT_DICE) {
+    this->screenEditDice.run(this->state);
+  } else if (this->state.getScreen() == SCREEN_PROFILE_MENU) {
+    this->screenProfileMenu.run(this->state);
+  } else if (this->state.getScreen() == SCREEN_ROLL_DICE) {
+    this->screenRollDice.run(this->state);
+  } else if (this->state.getScreen() == SCREEN_ROLL_SUMMARY) {
+    this->screenRollSummary.run(this->state);
+  } else if (this->state.getScreen() == SCREEN_ROLL_BREAKDOWN) {
+    this->screenRollBreakdown.run(this->state);
+  }
+
+  delay(1);
 }
 
-// ------------------------------------ //
-
-Button Program::prevButton() {
-  return this->buttons[BUTTON_PREV];
-}
-
-Button Program::selButton() {
-  return this->buttons[BUTTON_SEL];
-}
-
-Button Program::nextButton() {
-  return this->buttons[BUTTON_NEXT];
-}

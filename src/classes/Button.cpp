@@ -28,8 +28,9 @@ void Button::update() {
 }
 
 void Button::setPin(int pin) {
-  pinMode(pin, BUTTON_PIN_MODE);
   this->pin = pin;
+  pinMode(this->pin, BUTTON_PIN_MODE);
+  this->state = digitalRead(this->pin);
 }
 
 bool Button::getPressed() {
@@ -38,4 +39,8 @@ bool Button::getPressed() {
 
 bool Button::getLongPressed() {
   return this->longPressed;
+}
+
+bool Button::getDown() {
+  return this->state == BUTTON_STATE_PRESSED;
 }

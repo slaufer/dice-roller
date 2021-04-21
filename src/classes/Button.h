@@ -17,6 +17,7 @@ class Button {
     void setPin(int pin);
     bool getPressed();
     bool getLongPressed();
+    bool getDown();
 };
 
 #endif
