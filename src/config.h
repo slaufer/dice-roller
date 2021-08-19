@@ -6,8 +6,8 @@
 // button configs
 #define BUTTON_COUNT 3
 #define BUTTON_SEL_PIN 8
-#define BUTTON_PREV_PIN 7
-#define BUTTON_NEXT_PIN 9
+#define BUTTON_PREV_PIN 9
+#define BUTTON_NEXT_PIN 7
 
 #define BUTTON_STATE_DEFAULT HIGH
 #define BUTTON_STATE_PRESSED LOW

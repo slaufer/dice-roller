@@ -5,6 +5,8 @@
 void Display::init() {
   ssd1306_128x32_i2c_init();
   this->setFont(DISPLAY_FONT_DEFAULT);
+  ssd1306_flipVertical(1);
+  ssd1306_flipHorizontal(1);
 }
 
 void Display::setFont(const uint8_t *font) {

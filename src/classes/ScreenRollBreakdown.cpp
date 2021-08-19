@@ -17,6 +17,9 @@ void ScreenRollBreakdown::run(ProgramState &state) {
  
   char buf[STRING_BUF_SIZE];
 
+  state.getDisplay().write(0, 0, "");
+  state.getDisplay().write(1, 0, "");
+
   for (int i = 0; i < state.getDisplay().getRows() && this->pos + i < state.getRollCount(); i++) {
     snprintf((char *) buf, STRING_BUF_SIZE, "%2d|d%d: %d", this->pos + i + 1, state.getRoll(this->pos+i).getType(), state.getRoll(this->pos+i).getRoll());
     state.getDisplay().write(i, 0, buf);

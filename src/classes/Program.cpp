@@ -7,7 +7,6 @@
 #include "FlashAsEEPROM.h"
 
 void Program::setup() {
-  Serial.begin(9600);
   this->state.init();
   randomSeed(analogRead(0) + micros());
 }
